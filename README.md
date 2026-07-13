@@ -44,7 +44,7 @@ Construir o desenho de uma pipeline escalável em nuvem que realize:
 | `meta_alfabetizacao_uf` | ano, sigla_uf, rede | Batch + Streaming |
 | `meta_alfabetizacao_municipio` | ano, id_municipio, rede | Batch + Streaming |
 
-Todas as tabelas com código categórico (`serie`, `rede`, `presenca`, `preenchimento_caderno`, `alfabetizado`) utilizam join com `br_inep_avaliacao_alfabetizacao.dicionario` para decodificação dos valores.
+Todas as tabelas com código categórico (`serie`, `rede`, `presenca`, `preenchimento_caderno`, `alfabetizado`) são decodificadas via `bd.read_sql()` com LEFT JOIN à tabela `dicionario` diretamente no BigQuery (dados chegam já como texto). Nomes de UF e município são enriquecidos via JOIN com `br_bd_diretorios_brasil`.
 
 ### Fontes externas opcionais (enriquecimento futuro)
 
@@ -304,16 +304,15 @@ A camada Gold foi desenhada para suportar, futuramente:
 
 ```text
 tech_challenge/
-├── README.md
-├── modelo_solucao.md
-├── BigQuery INEP Avaliacao Alfabetizacao Extracao   ← blueprint notebook
-├── pipelines/
-│   ├── bronze/     ← scripts de ingestão batch e streaming
-│   ├── silver/     ← transformações, deduplicação, dicionários
-│   └── gold/       ← materialização dos produtos analíticos
-├── quality/        ← scripts de validação e testes de qualidade
-└── docs/           ← diagramas e documentação complementar
+├── README.md                              ← documentação executiva e técnica
+├── modelo_solucao.md                      ← modelo lógico detalhado por camada
+├── modelo_pipeline.pdf                    ← enunciado do desafio
+├── Pipeline Alfabetizacao Brasil Tech Challenge.py  ← notebook principal (Bronze→Silver→Gold + Qualidade)
+├── prod.json                              ← credenciais GCP (gitignored)
+└── .gitignore
 ```
+
+O notebook único consolida todas as camadas (extração, transformação, produtos analíticos e validação) em células sequenciais, conforme padrão Databricks para projetos de pipeline integrada.
 
 O repositório deve demonstrar o uso adequado de **Git** durante o desenvolvimento, incluindo:
 
@@ -335,25 +334,25 @@ O grupo deverá gravar um vídeo de até **5 minutos** em linguagem executiva, c
 
 ---
 
-## 15. Conteúdo entregue nesta etapa
+## 15. Conteúdo entregue
 
-Nesta etapa foram produzidos apenas artefatos de modelagem:
-
-* notebook com blueprint da solução e contratos de esquema por camada;
-* documentação executiva e técnica (`README.md` e `modelo_solucao.md`);
-* desenho lógico da pipeline com diagrama de fluxo;
-* definição das camadas, regras de qualidade coluna a coluna e produtos analíticos.
-
-Nenhum recurso foi criado ou provisionado.
+* **Pipeline funcional em Databricks/Azure** — notebook executável end-to-end (Bronze→Silver→Gold);
+* **Extração real do BigQuery** via `basedosdados.read_sql()` com JOINs ao dicionário e diretórios territoriais;
+* **6 tabelas Bronze**, **8 tabelas Silver**, **5 produtos Gold** materializados em memória;
+* **30 validações de qualidade** automatizadas (unicidade, completude, consistência, integridade referencial);
+* **Documentação técnica** (`README.md`, `modelo_solucao.md`) com diagrama, regras e decisões;
+* Credenciais GCP configuradas para acesso ao projeto `basedosdados` no BigQuery.
 
 ---
 
 ## 16. Próximos passos
 
-* conectar às fontes reais da Base dos Dados via BigQuery;
-* implementar a ingestão batch das 6 tabelas;
-* simular a ingestão streaming para metas e alunos;
-* codificar regras de qualidade como testes automatizados;
-* materializar produtos analíticos da camada Gold;
-* configurar monitoramento e alertas operacionais;
-* complementar o repositório com histórico Git, branches, PRs e evidências de execução.
+* ~~conectar às fontes reais da Base dos Dados via BigQuery~~ ✔️
+* ~~implementar a ingestão batch das 6 tabelas~~ ✔️
+* ~~codificar regras de qualidade como testes automatizados~~ ✔️
+* ~~materializar produtos analíticos da camada Gold~~ ✔️
+* simular ingestão streaming (Structured Streaming com Auto Loader ou Kafka mock);
+* persistir camadas em Delta Lake (ADLS Gen2) com particionamento por `ano`;
+* configurar monitoramento via Databricks Jobs + alertas por e-mail;
+* adicionar dashboard em Databricks SQL para consumo da camada Gold;
+* complementar histórico Git com branches feature/ e PRs documentadas.

@@ -2,7 +2,7 @@
 
 ## 1. Visão geral
 
-Este documento detalha o desenho lógico da solução proposta para o Tech Challenge Fase 2, com foco em uma pipeline híbrida para análise da alfabetização no Brasil. O conteúdo orienta a implementação posterior sem criação de recursos nesta etapa.
+Este documento detalha o desenho lógico da solução implementada no Tech Challenge Fase 2: uma pipeline híbrida para análise da alfabetização no Brasil. A pipeline está funcional em Databricks/Azure, extraindo dados reais do BigQuery via `basedosdados.read_sql()` com decodificação integrada.
 
 ### Indicador Criança Alfabetizada
 
@@ -27,7 +27,7 @@ A **meta nacional** é que, até **2030**, todas as crianças brasileiras esteja
 | Meta por UF | `meta_alfabetizacao_uf` | ano, sigla_uf, rede | Batch + Streaming |
 | Meta por Município | `meta_alfabetizacao_municipio` | ano, id_municipio, rede | Batch + Streaming |
 
-Todas as colunas categóricas (`serie`, `rede`, `presenca`, `preenchimento_caderno`, `alfabetizado`) exigem join com `br_inep_avaliacao_alfabetizacao.dicionario` para decodificação.
+Todas as colunas categóricas (`serie`, `rede`, `presenca`, `preenchimento_caderno`, `alfabetizado`) são decodificadas via LEFT JOIN com `br_inep_avaliacao_alfabetizacao.dicionario` na query SQL de extração (dados chegam já como texto ao Spark).
 
 ### Fontes externas opcionais (enriquecimento futuro)
 
