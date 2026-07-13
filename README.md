@@ -308,11 +308,13 @@ tech_challenge/
 ├── modelo_solucao.md                      ← modelo lógico detalhado por camada
 ├── modelo_pipeline.pdf                    ← enunciado do desafio
 ├── Pipeline Alfabetizacao Brasil Tech Challenge.py  ← notebook principal (Bronze→Silver→Gold + Qualidade)
+├── Dashboard Monitoramento Gold.py         ← monitoramento: volumetria, qualidade, KPIs
+├── ML Predicao Alfabetizacao.py            ← modelo preditivo (Random Forest + MLflow)
 ├── prod.json                              ← credenciais GCP (gitignored)
 └── .gitignore
 ```
 
-O notebook único consolida todas as camadas (extração, transformação, produtos analíticos e validação) em células sequenciais, conforme padrão Databricks para projetos de pipeline integrada.
+O notebook principal consolida todas as camadas (extração, transformação, produtos analíticos e validação). Os notebooks auxiliares demonstram expansões: monitoramento operacional e aplicação de IA/ML sobre a camada Gold.
 
 O repositório deve demonstrar o uso adequado de **Git** durante o desenvolvimento, incluindo:
 
